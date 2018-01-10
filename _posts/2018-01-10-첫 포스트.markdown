@@ -1,1 +1,21 @@
-#Hello World
+---
+title: 새해 첫 포스트
+layout: post
+---
+
+# Hello World
+## Hello World
+### Hello Wordl
+```php
+echo "Hello World"
+```
+
+```java
+public static void main(String args[]){
+	System.out.println("Hello World");
+}
+```
+
+```python
+print("Hello World")
+```
