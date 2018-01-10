@@ -1,5 +1,5 @@
 ---
-title: "Markdown Common Elements"
+title: "테마 기본 속성 가이드"
 layout: post
 date: 2016-02-24 22:44
 image: /assets/images/markdown.jpg
