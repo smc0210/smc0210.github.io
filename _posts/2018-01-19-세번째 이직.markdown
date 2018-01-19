@@ -1,7 +1,7 @@
 ---
 title: "세 번째 이직"
 layout: post
-date: 2018-01-19 13:21
+date: 2018-01-19 22:25
 image: /assets/images/markdown.jpg
 headerImage: false
 tag:
@@ -64,6 +64,7 @@ SI의 구조상 정해진 시간안에 반드시 아웃풋이 나와야하고 �
 
 **참고:**
 > [주니어 개발자를 위한 취업 정보 -Github 저장소](https://github.com/jojoldu/junior-recruit-scheduler)
+> 
 > 이력서 뿐만 아니라 회사를 찾는데 많은 도움을 받은 `Github` 저장소
 
 '화목한 가정에서 2남중 장남으로 태어나\~~~ '로 시작되는 자기소개서도 전부 뜯어 고치고, 단순히 나열하기만 했던 프로젝트들도
