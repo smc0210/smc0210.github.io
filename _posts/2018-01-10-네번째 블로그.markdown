@@ -56,7 +56,7 @@ description: 나의 네 번째 기술 블로그
 
 **티스토리 포스팅 프로세스 : **
  
-1. 마크다운 문법으로 편집기에서 글을 작성(주로 하루패드 혹은 vscode를 이용)
+1. 마크다운 문법으로 편집기에서 글을 작성
 2. 소스부분을 플러그인에 맞게 수정
 3. 티스토리 포스팅시 HTML 편집모드로 글작성
 4. 확인
@@ -78,11 +78,12 @@ description: 나의 네 번째 기술 블로그
 
 작년 연말에 SNS에 개발자들의 회고록등이 상당히 많이 올라왔었는데 그중 몇몇 분들의 아주 깔끔하고, 아주 세련된 github page를 보면서 5분도 안되서 나도 동참하기로 결정했다.
 참조 : 
-> [GitHub Page](https://pages.github.com)
-[Jekyll](https://jekyllrb-ko.github.io/)
+> - [GitHub Page](https://pages.github.com)
+> - [Jekyll](https://jekyllrb-ko.github.io/)
 
 사실 별 생각 없이 만들었는데 보다보니 `Github Page`와 `Jekyll`의 시너지가 예상보다 훨씬 괜찮았다.
-*No more databases, comment moderation, or pesky updates to install—just your content.*
+> *No more databases, comment moderation, or pesky updates to install—just your content.*
+
 `Jekyll`공식 가이드에 적힌 위 문구처럼 정말 신경쓸거 없이 포스팅에 집중할 수 있는 구조였고
 티스토리의 거의 유일한 불만이었던 문제가 상당부분 해결됬고 나의 귀차니즘을 해결해 줄 수 있는 대안처럼 보였다.
 
@@ -90,8 +91,9 @@ description: 나의 네 번째 기술 블로그
 1. 마크다운 편집기로 포스팅 작성
 2. git commit->push 
 
-그리고 무엇보다 `GitHub`다 더 무슨 말이 필요할까(이걸 핑계로 한번이라도 더 commit을...)
+그리고 무엇보다 `GitHub`다 더 무슨 말이 필요할까
+(이걸 핑계로 한번이라도 더 commit을...)
 이제야말로 포스팅에 집중 할 수 있는 서비스로 `Github Page`를 선택하고 티스토리는 지금처럼 코드조각들을 올리거나
 링크들을 공유하기로 하고, 직접적인 글을 작성하는건 여기에 집중을 해볼까 한다.
-이 마음이 이번엔 얼마나 갈지 모르겠지만 `github`가 끊임없이 나를 자극해주길 빌며 포스팅을 마친다.
+이 마음이 이번엔 얼마나 갈지 모르겠지만 `Github`가 끊임없이 나를 자극해주길 빌며 포스팅을 마친다.
 
