@@ -14,7 +14,7 @@ tag:
 - laravel
 category: blog
 author: 신명철
-description: AWS EC2에 APM 개발환경 셋팅
+description: AWS EC2에 기본적인 개발환경 셋팅
 
 ---
 
@@ -34,23 +34,25 @@ sudo apt-get update
 sudo apt-get upgrade
 {% endhighlight %}
 
-###Apache2 웹서버 설치
+### Apache2 웹서버 설치
 {% highlight bash %}
 sudo apt-get install apache2
 {% endhighlight %}
 
 정상적으로 설치 되었는지 웹브라우져로 확인
 ![Apache check][1]
-> elastic IP를 연결했다면 고정IP로 아니라면 `instance` 메뉴에서 IP 주소로 연결을 호 ㅏㄱ인한다.
+> `elastic IP`를 연결했다면 고정IP로 아니라면 `instance` 메뉴에서 할당된 public IP 주소로 연결을 확인한다.
+> 
+> `public IP`는 `instance`를 종료후 재시작할때마다 변경되니 주의
 
 
-###MySQL 서버 설치
+### MySQL 서버 설치
 {% highlight bash %}
 sudo apt-get install mysql-server
 {% endhighlight %}
 
 
-###PHP(7.1) 설치 
+### PHP(7.1) 설치 
 
 php를 다운받기 위해 저장소 추가
 {% highlight bash %}
