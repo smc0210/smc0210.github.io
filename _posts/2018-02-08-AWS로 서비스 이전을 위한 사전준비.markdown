@@ -1,0 +1,111 @@
+---
+title: "AWS로 서비스 이전을 위한 사전준비"
+layout: post
+date: 2018-02-08 19:25
+image: /assets/images/markdown.jpg
+headerImage: false
+tag:
+- AWS
+- CentOS
+- APM
+- PHP
+- MariaDB
+- S3
+category: blog
+author: 신명철
+description: AWS 이전을 위한 사전준비와 기본 AWS 셋팅
+
+---
+
+## Summary:
+
+AWS로 서버이전을 하기 위한 사전작업들과 AWS 콘솔 셋팅
+
+## 이전 서버 사양 체크
+1) 리눅스 버전체크
+{% highlight bash %}
+uname -a
+{% endhighlight %}
+
+2) CentOS 버전체크
+{% highlight bash %}
+cat /etc/redhat-release
+{% endhighlight %}
+
+3) 하드용량 체크
+{% highlight bash %}
+df -h
+{% endhighlight %}
+
+4) 메모리 체크
+{% highlight bash %}
+free -m
+{% endhighlight %}
+
+5) CPU 코어수 확인
+{% highlight bash %}
+cat /proc/cpuinfo | grep processor | wc -l
+{% endhighlight %}
+
+대략적으로나마 파악한 스펙을 기준으로 삼아 적당한 인스턴스를 생성한다.
+> [AWS EC2 사양 및 요금표 참조](https://aws.amazon.com/ko/ec2/instance-types/)
+
+## AWS 인스턴스 생성과 기본 셋팅정보 확인
+
+여기서는 테스트용 서버이므로 프리티어 사양인 `t2.micro` 로 셋팅하고, 
+`AMI(Amazon Machine Image)`는 새로나온 `Amazon Linux 2 LTS`를 사용했다.
+
+![ami_image][1]
+
+1) 쉘 접속
+인스턴스가 생성됬으면 각 OS에 맞는 방법으로 쉘에 로그인한다.
+AWS에서 인스턴스를 만든 후 기본생성되는 사용자 이름은 다음과 같다.
+
+- Amazon Linux AMI의 경우 사용자 이름은 ec2-user
+- RHEL AMI의 경우 사용자 이름은 ec2-user 또는 root
+- Ubuntu AMI의 경우 사용자 이름은 ubuntu 또는 root
+- Centos AMI의 경우 사용자 이름은 centos
+- Fedora AMI의 경우 사용자 이름은 ec2-user
+- SUSE의 경우 사용자 이름은 ec2-user 또는 root
+
+> [aws 공식문서 참조](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/AccessingInstances.html)
+
+
+2) OS에 설치되어 있는 프로그램 최신버전으로 패치
+
+AMI(아마존리눅스)는 CentOS 계열이므로 패키지 관리자 프로그램으로 `yum`을 사용한다.
+
+{% highlight bash %}
+sudo yum update
+{% endhighlight %}
+
+> AMI의 기본계정인 `ec2-user`를 그대로 사용하므로 sudo를 입력해야 진행이 된다.
+아니면 root 계정 패스워드를 설정 후 root 계정으로 진행해도 되지만 여기서는 ec2-user 그대로 진행
+
+3) 시스템 시간 설정
+서울 리전에서 인스턴스를 생성했어도 서버시간이 `UTC`로 되어있으니 이를 `Asia/Seoul/`로 변경해준다.
+{% highlight bash %}
+vi /etc/sysconfig/clock
+{% endhighlight %}
+
+![Linux Timezone Setting][2]
+
+시스템 전체에 적용하기 위해 `/usr/share/zoneinfo`의 적절한 파일에 `/etc/localtime`을 심볼릭 링크한다.
+{% highlight bash %}
+ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+{% endhighlight %}
+
+잘 적용됬는지 시간 확인
+{% highlight bash %}
+date
+{% endhighlight %}
+
+
+
+
+
+
+
+[1]: http://smc0210.github.io/assets/post/20180208-1-1.png
+[2]: http://smc0210.github.io/assets/post/20180208-1-2.png
+
