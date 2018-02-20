@@ -18,12 +18,16 @@ description: AWS 301 DevOps 세미나
 
 DevOps에 관한 AWS 301 세미나
 
-## 데브옵스 ?
+## 데브옵스란?
 
 ### 1) 간략한 세션 설명
-101,201,301 
+101 : 가장 기본적인 입문용 
+201 : 특정 서비스를 기반으로 진행하는 세미나
+301 : 전문가 과정
+
 301은 기본적신 서비스에 관한 설명은 없음
 추후 이론설명 세미나 이후 301 세션 실습 세미나도 진행하고 있음
+금일 `DevOps`관련 실습세미나는 4월중 예정
 
 ### 2) AWS 사례 및 파트너 사례
 8~12명의 피자두판 사이즈의 개발팀으로 구성된 각각의 개발팀이 하나의 오너쉽을 갖는 마이크로단위의 개발팀으로 이뤄짐
@@ -61,18 +65,18 @@ DevOps에 관한 AWS 301 세미나
 - 지속적 배포 `Continuous deploy`
 
 ### 6) AWS 코드 서비스
-CodeCommit
+[CodeCommit](https://aws.amazon.com/ko/codecommit/)
 깃허브 와 동일하다고 보면 될 깃서버 
 - 완전 관리형 코드 저장소
 - 암호화를 통해 코드를 안전하게 관리
 - 깃허브의 슬랙 연동처럼 트리거 기능을 이용할 수 있다.
 
-CodeBuild
+[CodeBuild](https://aws.amazon.com/ko/codebuild/)
 > 소스코드의 컴파일 및 테스트를 실행하며, 소프트웨어 패키지를 생성하는 완전 관리형 빌드 서비스
 
 - 지속적으로 확장하고 여러 빌드를 동시에 처리
 - Docker 이미지를 통해 사용자 요구에 맞는 사용자 지정 빌드 환경 제공 가능
-- ₩CodePipeline₩ 및 ₩Jenkins₩ 와 통합
+- `CodePipeline` 및 `Jenkins` 와 통합
 - 분 단위로 과금발생
 - 빌드 뿐만 아니라 테스트 용드로도 많이 사용
 - 람다의 경우 5분 제한이 있기때문에 그럴경우 CodeBuild를 사용하기도 함
@@ -82,14 +86,14 @@ CodeBuild
 Code....TEST
 AWS에서 제공하는 TEST 도구는 따로 업으며, 타 서비스 (외부서비스)의 테스트 도구를 사용해서 테스트를 진행한다.
 
-CodeDeploy
+[CodeDeploy](https://aws.amazon.com/ko/codedeploy/)
 ec2 뿐만 아니라 온프레미스에 배포 가능
 - 가동중지 시간 최소화
 - 정지와 롤백을 수동으로 제어 가능
 - 다중 서버의 부분적 배포 실패시 제어를 할 수 있도록 ₩deployment Configuration₩ 제공
 - yml 포맷으로 설정파일을 지정할 수 있다.
 
-(CodePipeline)[https://docs.aws.amazon.com/ko_kr/codepipeline/latest/userguide/welcome.html]
+[CodePipeline](https://docs.aws.amazon.com/ko_kr/codepipeline/latest/userguide/welcome.html)
 Code* 서비스들을 연결하고 연동해주는 서비스
 소스 > 빌드 > 테스트 > 프로덕션 을 연결해주고 디자인할 수 있도록 해주는 서비스
 
@@ -97,16 +101,16 @@ Code* 서비스들을 연결하고 연동해주는 서비스
 - 각 단계를 시각화 시키고 각 단계(Stage) 별로 Action을 지정해 줄 수 있다.
 - pipeline 의 범위를 넘어가는 외부의 간섭을 허용한다.
 
-CodeStar
+[CodeStar]
 DevOps 를 위한 서비서들을 개별이 아닌 통합적으로 제공해주는 서비스
 - 템플릿이 제공되서 원하는 서비스를 구축하기 쉽다.
 - 프로젝트 팀원 관리도 가능
 - 자동화된 배포 과정
 - 통합 모니터링 및 대시보드를 제공하고 wiki도 제공
 
-(CloudFormation)[https://aws.amazon.com/ko/cloudformation/]
+[CloudFormation](https://aws.amazon.com/ko/cloudformation/)
 
-## 실습...
+## 실습진행..
 
 ## 베스트 프랙티스
 - 베스트 프랙티스에 집중
@@ -131,15 +135,4 @@ DevOps 를 위한 서비서들을 개별이 아닌 통합적으로 제공해주�
 
 
 
-
-
-
-
-
-{% highlight bash %}
-uname -a
-{% endhighlight %}
-
-
-[1]: http://smc0210.github.io/assets/post/20180208-1-1.png
 
