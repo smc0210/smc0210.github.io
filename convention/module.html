@@ -1,0 +1,937 @@
+<!doctype html>
+<html class="no-js" lang="">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>bstones Coding Convetion</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">		
+		<link rel="shortcut icon" href="favicon.ico" />
+		<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/journal/bootstrap.min.css" rel="stylesheet" integrity="sha384-r/qnS4YZBLuBSKeVc+sM4eUYUiJMFhkHfx1nwlErHhTd+NgeJlN/NiiTd6jbKJzm" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="css/reset.min.css"> -->
+		<!-- <link rel="stylesheet" href="css/common.min.css"> -->
+		<link rel="stylesheet" href="css/docs.min.css">
+		<link rel="stylesheet" href="css/common_project.css">
+		<link rel="stylesheet" href="css/content.css">
+		<link rel="stylesheet" href="css/syntax/shCore.css">
+		<link rel="stylesheet" href="css/syntax/shCoreMidnight.css">
+		<link rel="stylesheet" href="css/syntax/shThemeMidnight.css">
+		<script src="js/vendor/modernizr-2.8.3.min.js"></script>
+		<style>
+			/* 해당 Doc 문서 전용 */
+			body {padding:70px 0 70px;font-family:'Malgun Gothic', '맑은고딕', 'Modern H Light', '돋움', 'Dotum', 'Tahoma', "Arial", 'AppleGothic', 'sans-serif'; }
+			.navbar {font-family:'Malgun Gothic', '맑은고딕', 'Modern H Light', '돋움', 'Dotum', 'Tahoma', "Arial", 'AppleGothic', 'sans-serif'; }
+			.navbar-brand {padding:15px;}
+			.navbar-default .navbar-nav>li>a {color: #000000;}
+			.btn_drop1{margin-right: 10px;}
+			.row{margin-bottom: 100px;}
+			/* 해당 Doc 문서 전용 */
+
+			/* common.css 충돌로 인한 추출 내역  */
+			.center-block {display:block; margin-right:auto; margin-left:auto;}
+			.pull-right {float:right !important;}
+			.pull-left {float:left !important;}
+
+			.bs-example li{list-style:none;}
+			
+			.chk_img > .ico_chk {width:12px; height: 12px; margin:0; padding:0; background:url('../../images/common/bg_check.gif') no-repeat left top; display:inline-block; overflow:hidden; vertical-align:top; margin:3px 5px 0 0;}
+			.chk_img.on > .ico_chk {background-position:left -12px; display:inline-block; vertical-align:top; margin:3px 5px 0 0;}
+			.chk_img input[type=checkbox] {opacity:0; width:12px; height:12px;}
+		
+			.layer_pop {display:none; padding:40px 20px; width:240px; height:auto;background:#fff; }
+			.layer_pop2 {display:none; padding:40px 20px; width:240px; height:auto;background:#fff; }
+			.layer_pop3 {display:none; padding:40px 20px; width:240px; height:auto;background:#fff;}
+			.layer_close {position:absolute; top:10px; right:10px; width: 20px; height: 20px; background:transparent;}
+			.dropdown {position:relative;}
+			.dropdown-list{position:absolute;z-index:100;top:100%;left:0;float:left;display:none;padding:5px 0;margin: -5px 0 0;min-width:150px;}
+			.dropdown-list-custom {-webkit-background-clip: padding-box;background-clip: padding-box;border: 1px solid #ccc;border: 1px solid rgba(0,0,0,.15);border-radius: 4px;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
+			.dropdown-list > li {background:#fff; width:100%}
+			.dropdown-list > li > a {display: block;padding: 3px 20px;clear: both;font-weight: 400;line-height: 1.42857143;color: #333;white-space: nowrap;}
+			.open > .dropdown-list{display:block;}
+
+			.slick {overflow:hidden;}
+			.slick ul{ /*position:absolute; top:0; left:0; width:100%; height:150px; overflow:hidden;*/-webkit-padding-start:0px;}
+			.slick .slide li { float:left;height:150px;}
+			.slick .multiple_slides li { float:left;height:150px;text-align:center;}
+			.slick .multiple_slides li h4 {margin-top:65px;color:#fff;font-size:30px;}
+			.slick .slick-dots {position: absolute; bottom:20px; left:50%; transform: translateX(-50%);}
+			.slick .slick-dots li {float: left; margin:0 8px; width:11px; height: 11px; border-radius: 50%; background:#999; opacity: 0.3; cursor: pointer;}
+			.slick .slick-dots li.slick-active {opacity: 1;}
+			.slick .slick-dots li button {font-size:0; opacity:0;}
+
+
+			.btn_area { text-align:center; overflow:hidden; }
+			.btn_area button { display:block; width:100px;font-size:16px; color:#fff; font-weight:bold; border-radius:0; }
+			.btn_area button.btn_prev { float:left; }
+			.btn_area button.btn_next { float:right; }
+			.btn_area button.btn_prev2 { float:left; }
+			.btn_area button.btn_next2 { float:right; }
+
+			.header .header_inner {position:relative;}
+			.header .header_inner .gnb > li {position:relative;}
+			.header .header_inner .gnb > li:hover > a {background:#ccc;}
+			.header .header_inner .gnb > li:hover > ul {left:0;}
+			ul.gnb2 { padding-left: 0; height: 100px;}
+			.header .header_inner .gnb > li > ul {position:absolute;left:-3000px;top:50px;width:auto;}
+			.header .header_inner .gnb > li > ul > li > a {display:block;height:50px;line-height:50px;padding:0 7px;font-size:13px;color:#fff;background:#666;}
+			.header .header_inner .gnb > li > ul > li > a:hover {background:#999; color:#444c5c;}
+			
+			.header {background:#000;}
+			.header_inner {margin:0 auto;}
+			.header_inner ul {text-align:center;overflow:visible;width:846px;margin:0 auto;}
+			.header_inner ul:after {display:block;clear:both;content:'';}
+			.header_inner ul > li {width:110px;height:50px;float:left;background:#999;border-right:1px solid #000;}
+			.header_inner ul > li:last-child {border-right:0;}
+			.header_inner ul > li > a {display:block;font-size:12px;line-height:50px;color:#fff;text-align:center;}
+			.header_inner ul > li > ul > li {border-right:0;}
+			/* 체크박스 디자인 */
+			.checkbox {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+			.checkbox + .label {color:#999; font-size:89%; cursor:pointer;}
+			.checkbox + .label:before {content:''; display:inline-block; margin:0 5px 0 0; width:13px; height:13px; border:1px solid #dfdfdf; text-align:center; vertical-align:middle; }
+			.checkbox:checked + .label:before {background:#bfbfbf;}
+			/* 라디오버튼 디자인 */
+			.radio {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+			.radio + .label {color:#999; font-size:89%; cursor:pointer;}
+			.radio + .label:before {content:''; display:inline-block; margin:0 5px 0 0; width:13px; height:13px; border:1px solid #dfdfdf; border-radius:13px; text-align:center; vertical-align:middle; }
+			.radio:checked + .label:before {background:#bfbfbf;}
+			/* 파일첨부 디자인 */
+			.file_upload {position:relative; width:260px;}
+			.file_upload .file {position:absolute; right:0; width:1px; height:1px; opacity:0; overflow:hidden;}
+			.file_upload .label {display:inline-block; position:absolute; top:0; right:0; height:28px; padding:7px; background-color:#bfbfbf; color:#fff; cursor:pointer;}
+			.file_upload .file_route {width:200px; height:28px; border:1px solid #bfbfbf;}
+			/* 모바일 스크롤 생성 */
+			.box {overflow-y:auto; width:320px; height:200px; border:1px solid #bfbfbf;}
+			.box::-webkit-scrollbar {width:3px;}
+			.box::-webkit-scrollbar-thumb {background-color:#a9a9a9;}
+
+
+			
+
+			/* 
+			.checkbox {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+			.checkbox + .label {color:#777; font-size:89%; cursor:pointer;}
+			.checkbox + .label:before {content:''; display:inline-block; margin:0 5px 0 0; width:13px; height:13px; background:url(images/chk_design.png) 0 0 no-repeat; text-align:center; vertical-align:middle; }
+			.checkbox:checked + .label:before {content:''; background:url(images/chk_design.png) 0 -14px no-repeat; background-size:13px;}
+ 
+			.radio {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+			.radio + .label {color:#777; font-size:89%; cursor:pointer;}
+			.radio + .label:before {content:''; display:inline-block; margin:0 5px 0 0; width:13px; height:13px; background:url(images/radio_design.png) 0 0 no-repeat; text-align:center; vertical-align:middle; }
+			.radio:checked + .label:before {content:''; background:url(images/radio_design.png) 0 -14px no-repeat; background-size:13px;}
+			*/
+
+
+			/* common.css 충돌로 인한 추출 내역  */
+			
+.rnb_area {display: block}
+.rnb_area .rnb {position: fixed; top:0; right: -220px; z-index: 100;}
+.rnb_area .rnb .top {margin-top:1px; width:181px; height: 38px; background: #2d241f;}
+.rnb_area .rnb .top .txt {float:left; margin: 15px 0 0 10px; line-height: 10px; font-size: 10px; font-weight: 300; color: #fff;}
+.rnb_area .rnb .top .txt span {font-size: 15px; }
+.rnb_area .rnb .top .join, .rnb_area .rnb .top .login {float:right; margin:18px 10px 0 0; line-height: 10px; font-weight: 300;}
+.rnb_area .rnb .top .join a, .rnb_area .rnb .top .login a, .rnb_area .rnb .top .logout a  {font-size: 10px; color: #c7b7af;}
+.rnb_area .rnb .top .logout {float:left; margin:18px 0 0 10px; line-height: 10px; font-weight: 300;}
+.rnb_area .rnb .close {position: absolute; top:10px; left:-30px; width:11px; height: 11px; font-size: 0; cursor: pointer;}
+.rnb_area .rnb .depth1 > li > a {margin-top:1px; padding:14px; height: 10px; background: #2d241f; font-size: 11px; font-weight: 300; color: #fff;}
+.rnb_area .rnb .depth2 {display: none;}
+.rnb_area .rnb .depth2 > li > a {margin-top:1px; padding:8px 0 0 24px; height: 20px; line-height: 14px; font-size: 10px; color: #fff; background: #6f6057;}
+
+
+		
+			
+		</style>
+	</head>
+	<body>
+		<!--[if lt IE 8]>
+            <p class="browserupgrade">현재 사용하고 계신 브라우져는 <strong>공식지원</strong> 이 끊긴 브라우져입니다. 다음 페이지에서  <a href="http://browsehappy.com/">브라우져 업그레이드</a>를 진행해주세요.</p>
+      <![endif]-->
+
+		<!-- Content 영역 -->
+		<div id="wrap" class="col-xs-10 col-xs-offset-1">
+			<!-- #header -->
+			<nav class="navbar navbar-default navbar-fixed-top">
+				<div class="container-fluid" >
+
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#"><img src="favicon.ico" alt=""></a>
+						<p class="navbar-text">모듈 가이드문서</p>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+						<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" >폼 요소 디자인<span class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#aCheck">체크박스 디자인</a></li>	
+									<li><a href="#aRadio">라디오버튼 디자인</a></li>				
+									<li><a href="#aFile">파일첨부 디자인</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">모듈<span class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#aGnb">헤더(GNB)</a></li>
+									<li><a href="#aLnb">LNB 2 depth</a></li>
+									<li><a href="#aTop">상단 이동</a></li>
+									<li><a href="#aTab">탭 이동</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" >모바일 <span class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+
+									<li><a href="#aMscroll">모바일 스크롤 생성</a></li>
+								</ul>
+							</li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="http://ds.bstones.co.kr:9000/bstones/CodingConvention/code/master" target="_blank" >CodeConvention</a></li>							
+						</ul>
+					</div><!-- /.navbar-collapse -->	
+				</div><!-- /.container-fluid -->
+			</nav>
+			<!-- //#header -->
+			<!-- //#container.container -->
+			<div id="container" class="container">
+			
+				<div class="row">
+					<h1 id="aInfo" class="page-header">모듈 가이드문서 <small>자주 사용하는 모듈 예시와 가이드</small></h1>
+					<p class="">
+						자주 사용하는 모듈의 기본적인 <code>html</code>, <code>css</code>, <code>js</code>구성에 대해 설명하고 예제를 제공합니다.<br>하기 구성을 참고해 프로젝트에 적용할 수 있습니다.
+					</p>
+					<p>
+						예제 섹션의 샘플들은 모두 필수적인 디자인만 되어 있습니다.
+					</p>
+
+				</div>
+				<!-- 체크박스 디자인 -->
+				<div class="row">
+					<h1 id="aCheck" class="page-header">체크박스 디자인</h1>
+					<p>하기 템플릿 부분은 <code>common.css</code>에 포함되어 있습니다.</p>
+					<div class="bs-example" data-example-id="simple-button-group">
+						<input type="checkbox" id="check" class="checkbox">
+						<label for="check" class="label">체크박스</label>
+					</div>
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P>
+						<code>input[type=checkbox]</code>와 <code>label</code>을 마크업한 뒤, 실제 체크박스는 숨깁니다. <br> 체크박스를 <code>label:before</code>의 <code>background</code>속성으로 대체하고, 체크박스가 <code>checked</code>된 경우도 해당 이미지로 변경합니다.
+						</P>
+					</div>
+
+					<pre class="brush:xml">
+						<input type="checkbox" id="check" class="checkbox">
+						<label for="check" class="label">체크박스</label>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+						<P><code>common.css</code>에 가장 기본적인 css가 선언되어 있습니다. <br>디자인에 따라 <code>background</code>속성을 URL로 변경하거나 <code>width</code>, <code>height</code>, <code>position</code> 값 등을 재조정합니다.</P>
+					</div>
+					<pre class="brush:css">
+						.checkbox + .label {cursor:pointer;}
+
+						/* 진짜 체크박스 숨기기 */
+						.checkbox {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+
+						/* 가짜 체크박스 디자인 */
+						.checkbox + .label:before {display:inline-block; width:10px; height:10px; border:1px solid #dfdfdf; margin-right:5px; content:'';}
+
+						/* 체크박스에 체크되었을 때 스타일 */
+						.checkbox:checked + .label:before {background:#bfbfbf;}
+					</pre>
+				</div>
+				<!-- //체크박스 디자인 -->
+				<!-- 라디오버튼 디자인 -->
+				<div class="row">
+					<h1 id="aRadio" class="page-header">라디오버튼 디자인</h1>
+					<p>하기 템플릿 부분은 <code>common.css</code>에 포함되어 있습니다.</p>
+					<div class="bs-example" data-example-id="simple-button-group">
+						<input type="radio" id="rad1" name="rad" class="radio">
+                        <label for="rad1" class="label">라디오버튼</label>
+                        <input type="radio" id="rad2" name="rad" class="radio">
+                        <label for="rad2" class="label">라디오버튼2</label>
+                        <input type="radio" id="rad3" name="rad" class="radio">
+                        <label for="rad3" class="label">라디오버튼3</label>
+					</div>				
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P>
+							<code>input[type=radio]</code>와 <code>label</code>을 마크업한 뒤, 실제 라디오버튼은 숨깁니다. <br> 라디오버튼을 <code>label:before</code>의 <code>background</code>속성으로 대체하고, 라디오버튼이 <code>checked</code>된 경우도 해당 이미지로 변경합니다.
+						</P>
+					</div>
+					<pre class="brush:xml">
+						<input type="radio" id="rad1" name="rad" class="radio">
+                        <label for="rad1" class="label">라디오버튼</label>
+
+                        <input type="radio" id="rad2" name="rad" class="radio">
+                        <label for="rad2" class="label">라디오버튼2</label>
+
+                        <input type="radio" id="rad3" name="rad" class="radio">
+                        <label for="rad3" class="label">라디오버튼3</label>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+						<P><code>common.css</code>에 가장 기본적인 css가 선언되어 있습니다.<br>디자인에 따라 <code>background</code>속성을 URL로 변경하거나 <code>width</code>, <code>height</code>, <code>position</code> 값 등을 재조정합니다.</P> 
+					</div>
+
+					<pre class="brush:css">
+					.radio + .label {cursor:pointer;}
+
+					/* 진짜 라디오버튼 숨기기 */
+					.radio {overflow:hidden; position:absolute; width:1px; height:1px; padding:0; border:0; margin:-1px; clip:rect(0 0 0 0);}
+
+					/* 가짜 라디오버튼 디자인 */
+					.radio + .label:before {content:''; display:inline-block; margin:0 5px 0 0; width:13px; height:13px; border:1px solid #dfdfdf; border-radius:13px; text-align:center; vertical-align:middle; }
+
+					/* 라디오버튼에 체크되었을 때 스타일 */
+					.radio:checked + .label:before {background:#bfbfbf;}
+					</pre>
+
+				</div>
+				<!-- //라디오버튼 디자인 -->
+				<!-- //select 디자인 -->
+				<!--파일첨부  디자인 -->
+				<div class="row">
+					<h1 id="aFile" class="page-header">파일첨부 디자인</h1>
+					<p>하기 템플릿 부분은 <code>common.css</code>에 포함되어 있습니다.</p>
+					<div class="bs-example" data-example-id="simple-button-group">
+						<div class="file_upload">
+                         		<input type="text"  title="File Route" id="file_route" readonly class="file_route">
+		                        <label for="File" class="label">파일첨부</label>
+								<input type="file" id="File" onchange="javascript:document.getElementById('file_route').value=this.value" class="file">
+							</div>  
+					</div>
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P>
+						부모 <code>div</code> 안에 <code>input[type=text]</code>와 <code>input[type=file]</code>, <code>label</code>을 마크업한 뒤, 실제 파일찾기 버튼은 숨깁니다. <code><br>label</code>을 파일첨부 버튼으로 사용합니다. 
+						</P>
+					</div>
+
+					<pre class="brush:xml">
+						<div class="file_upload">
+                     		<input type="text"  title="File Route" id="file_route" class="file_route" readonly >
+	                        <label for="File" class="label">파일첨부</label>
+							<input type="file" id="File" onchange="javascript:document.getElementById('file_route').value=this.value" class="file">
+						</div>  
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+						<P><code>common.css</code>에 가장 기본적인 css가 선언되어 있습니다. <br> 디자인에 따라 <code>width</code>, <code>height</code>, <code>position</code> 값 등을 재조정합니다.</P> 
+					</div>
+					<pre class="brush:css">
+						.file_upload {position:relative; width:260px;}
+						.file_upload .file_route {width:200px; height:28px; border:1px solid #bfbfbf;}
+
+						/* 진짜 파일첨부 버튼 숨기기 */
+						.file_upload .file {position:absolute; width:1px; height:1px; opacity:0; overflow:hidden;}
+
+						/* 가짜 파일첨부 버튼 디자인과 위치 조정 */
+						.file_upload .label {display:inline-block; position:absolute; top:0; right:0; height:28px; padding:7px; background-color:#bfbfbf; color:#fff; cursor:pointer;}
+					</pre>
+				</div>
+				<!-- //파일첨부 디자인 -->
+
+				<!-- header -->
+				<div class="row">
+					<h1 id="aGnb" class="page-header">헤더</h1>
+					<p>하기 템플릿 부분은 <code>reset.css</code> 와<code>common.css</code>를 필요로 합니다.</p>
+					
+					<h3>각 메뉴별로 하나씩 보여지는 형태</h3>
+					
+					<div class="bs-example col-xs-12" data-example-id="simple-button-group">
+						<div class="header col-xs-12">
+							<div class="header_inner col-xs-12">
+								<ul class="gnb col-xs-12">
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul class="gnb2">
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>	
+					</div>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<p><a href="http://ds.bstones.co.kr:9000/bstones/CodingConvention">codeConvention</a> 의 <code>header.html</code> 참조</p>
+					</div>
+
+					<pre class="brush:xml">
+						<div class="header">
+							<div class="header_inner">
+								<ul class="gnb">
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+									<li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li><li>
+										<a href="#none">1depth</a>
+										<ul>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+											<li><a href="#none">2depth</a></li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+						</div>	
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+					</div>
+
+					<pre class="brush:css">
+					/* header - 메뉴별로 하나씩 보여지는 형태
+							  - 속성값은 프로젝트별로 변경 (넓이,높이,컬러) */
+					.header .header_inner {position:relative;}
+					.header .header_inner .gnb > li {position:relative;}
+					.header .header_inner .gnb > li:hover > a {background:#ccc;}
+					.header .header_inner .gnb > li:hover > ul {left:0;}
+					.header .header_inner .gnb > li > ul {position:absolute;left:-3000px;top:50px;width:auto;}
+					.header .header_inner .gnb > li > ul > li > a {display:block;height:50px;line-height:50px;padding:0 7px;font-size:13px;color:#fff;background:#666;}
+					.header .header_inner .gnb > li > ul > li > a:hover {background:#999; color:#444c5c;}
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+					</div>
+
+					<h3>메뉴 오버시 전체메뉴 펼쳐짐 형태</h3>
+					<p>단순 마우스 이벤트시 슬라이드 처리 (자바스크립트 없음)</p>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<p><a href="http://ds.bstones.co.kr:9000/bstones/CodingConvention">codeConvention</a> 의 <code>header_allmenu.html</code> 참조</p>
+					</div>
+
+					<pre class="brush:xml">
+						<div class="header">
+							<div class="header_inner">
+								<ul class="gnb_depth1">
+									<li><a href="#none">menu01</a></li>
+									<li><a href="#none">menu02</a></li>
+									<li><a href="#none">menu03</a></li>
+									<li><a href="#none">menu04</a></li>
+									<li><a href="#none">menu05</a></li>
+									<li><a href="#none">menu06</a></li>
+									<li><a href="#none">menu07</a></li>
+								</ul>
+								<div class="gnb_depth2">
+									<ul>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+										<li>
+											<ul>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+												<li><a href="#none">2depth</a></li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>						
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+					</div>
+
+					<pre class="brush:css">
+						.header {background:#000;}
+						.header_inner {width:1200px;margin:0 auto;}
+						.header_inner > ul {text-align:center;overflow:visible;width:840px;margin:0 auto;}
+						.header_inner > ul:after {display:block;clear:both;content:'';}
+						.header_inner > ul > li {width:120px;height:50px;float:left;background:#999;border-right:1px solid #000;}
+						.header_inner > ul > li:last-child {border-right:0;}
+						.header_inner > ul > li > a {display:block;font-size:12px;line-height:50px;color:#fff;text-align:center;}
+						.header_inner > ul > li > ul > li {border-right:0;}
+						.header_inner .gnb_depth2 {padding-top:10px; width:100%; display:none; position:absolute; top:50px; left:0;}
+						.header_inner .gnb_depth2 > ul {overflow:hidden; width:840px; margin:0 auto;}
+						.header_inner .gnb_depth2 > ul:after {display:block;clear:both;content:'';}
+						.header_inner .gnb_depth2 > ul > li {float:left; width:120px;}
+						.header_inner .gnb_depth2 > ul > li a {display:block; text-align:center;}
+						.header_inner .gnb_depth2 > ul > li a:hover {color:#000;}
+					</pre>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+					</div>
+
+					<pre class="brush:js">
+						$(".gnb_depth1 > li").mouseover(function(){
+							$(".gnb_depth2").slideDown(350);
+						});
+						//GNB 메뉴 아웃
+						$('.header_inner').mouseleave(function() {
+							$(".gnb_depth2").slideUp(350);
+						});	
+					</pre>
+
+				</div>
+				<!-- //header -->
+				<!-- Lnb -->
+				<div class="row">
+					<h1 id="aLnb" class="page-header">Lnb 2depth, 3depth</h1>
+					<p>하기 템플릿 부분은 <code>reset.css</code>, <code>common.css</code>, <code>common.js</code>  를 필요로 합니다.</p>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P><code>.lnb</code>와 <code>.view</code> 클래스는 <code>common.js</code> 와 <code>common.css</code>에서 사용하는 예약어 입니다.</P>
+					</div>
+
+					<pre class="brush:xml">
+						<div class="lnb">
+							<ul> // 2depth
+								<li class="view"> // 활성화된 class에 view 추가
+									<a href="#none">2depth</a>
+									<ul> // 3depth
+										<li class="on">3depth</li> // 활성화된 class에 on 추가
+										<li>3depth</li>
+									</ul>
+								</li>
+								<li>2depth</li>
+							</ul>
+						</div>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+						<P><code>common.css</code>에 선언되어 있습니다.</P>
+					</div>
+
+					<pre class="brush:css">
+						/* lnb */
+						.lnb > ul > li.view > a {color:#fff; background:#595151 url('../../images/sub/bg_lnb.gif') no-repeat 163px center;}
+						.lnb > ul > li.view > ul {display:block;}
+						.lnb > ul > li > ul > li.on {background:url('../../images/sub/blt_on.gif') no-repeat left center;}
+						.lnb > ul > li > ul > li.on > a {color:#e71e26; font-weight:bold;}
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+						<P><code>common.js</code>에 선언되어 있습니다.</P>
+					</div>
+
+					<pre class="brush:js">
+						// lnb 탭이동 2depth, 활성화된 class에 view 추가
+						$('.lnb > ul > li > a').on('click', function (){
+							if (!$(this).parent().find('ul').is(':visible')){
+								$('.lnb > ul > li.view').removeClass('view');
+								$(this).parent().addClass('view');
+							} else {
+								$(this).parent().removeClass('view');
+							}
+						});
+
+						// lnb 탭이동 3depth 활성화된 class에 on 추가
+						$('.lnb > ul > li > ul > li > a').on('click', function (){
+							var index = $(this).parent().index();
+							if (!$(this).parent().find('ul').is(':visible')){
+								$('.lnb > ul > li > ul > li.on').removeClass('on');
+								$(this).parent().addClass('on');
+							} else {
+								$(this).parent().removeClass('on');
+							}
+						});
+					</pre>
+				</div>
+				<!-- //Lnb -->
+
+				<!-- accordion -->
+				<div class="row">
+					<h1 id="aAccordian" class="page-header">아코디언</h1>
+					<p>하기 템플릿 부분은 <code>reset.css</code>, <code>common.css</code>, <code>common.js</code>  를 필요로 합니다.</p>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P><code>.accordion</code>는 <code>common.css</code>에 선언되어있는 예약어 입니다.</P>
+					</div>
+
+					<pre class="brush:xml">
+						<ul class="accordion">
+							<li>
+								<a href="">질문영역</a>
+								<p>답변영역</p>
+							</li>
+							<li>
+								<a href=""></a>
+								<p></p>
+							</li>
+							<li>
+								<a href=""></a>
+								<p></p>
+							</li>
+						</ul>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+						<P><code>common.js</code>에 선언되어 있습니다.</P>
+					</div>
+
+					<pre class="brush:js">
+						// FAQ 열고/닫기 (아코디언 기본 none/block)
+						$('.accordion li a').on('click', function () {
+							if (!$(this).parent().hasClass('curr')){
+								$('.accordion li.curr').removeClass('curr');
+								$(this).parent().addClass('curr');
+							} else {
+								$(this).parent().removeClass('curr');
+							}
+						});
+					</pre>
+									
+
+				</div>
+				<!-- //accordian -->
+				
+				<!-- 상단 탑 이동 -->
+				<div class="row">
+					<h1 id="aTop" class="page-header">상단 이동</h1>
+					<p>하기 템플릿 부분은 <code>reset.css</code>, <code>common.css</code>, <code>common.js</code>  를 필요로 합니다.</p>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P><code>.btn_top</code>는 <code>common.js</code>에서 사용하는 예약어 입니다.</P>
+					</div>
+
+					<pre class="brush:xml">
+						<div class="btn_top">
+							<a href=""></a>
+						</div>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+						<P><code>common.js</code>에 선언되어 있습니다.</P>
+					</div>
+
+					<pre class="brush:js">
+						// 우측 Top버튼
+						$('.btn_top a').on('click', function () {
+							$('html, body').animate({'scrollTop':'0px'}, 500);
+							$(document).animate({'scrollTop':'0px'}, 500);
+						});
+					</pre>
+				</div>
+				<!-- //상단 탑 이동 -->
+
+				<!-- 탭 이동 -->
+				<div class="row">
+					<h1 id="aTab" class="page-header">탭이동</h1>
+					<p>하기 템플릿 부분은 <code>reset.css</code>, <code>common.css</code>, <code>common.js</code>  를 필요로 합니다.</p>
+					
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P><code>.tab_menu</code>와 <code>.tab_box</code> 클래스는<code>common.js</code>에서 이벤트 컨트롤을 위해 사용하는 예약어 입니다.</P>
+					</div>
+
+					<pre class="brush:xml">
+						<ul class="tab_menu">
+							<li>...</li>
+							<li>...</li>
+						</ul>
+						<div class="tab_box">...</div>
+						<div class="tab_box">...</div>
+					</pre>
+
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>JavaScript</h4>
+						<P><code>common.js</code>에 선언되어 있습니다.</P>
+					</div>
+
+					<pre class="brush:js">
+						// 탭 이동
+						$('.tab_menu li').on('click', function () {
+							var indx = $(this).index();
+							$('.tab_box').css('display', 'none');
+							$('.tab_box').eq(indx).css('display', 'block');
+						});
+					</pre>
+				</div>
+				<!-- //탭 이동 -->
+
+				<!-- 모바일 스크롤 -->
+				<div class="row">
+					<h1 id="aMscroll" class="page-header">모바일 스크롤 생성</h1>
+					<p>모바일에서는 기본적으로 스크롤바가 나타나지 않습니다. 그러나 스크롤바가 필요한 경우, 하단의 코드를 참고해 만들 수 있습니다. <br>단, Opera Mini는 지원하지 않습니다. <br><br></p>
+
+					<div class="bs-example" data-example-id="simple-button-group">
+						<div class="box">
+						  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+						</div>
+					</pre>
+					</div>
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>HTML</h4>
+						<P>
+						스크롤바가 필요한 영역에 클래스를 지정합니다.
+						</P>
+					</div>
+					<pre class="brush:xml">
+						<div class="box">
+						  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
+						</div>
+					</pre>
+					<div class="bs-callout bs-callout-danger" id="callout-overview-not-both">
+						<h4>CSS</h4>
+						<P>스크롤바가 필요한 영역에 <code>overflow-y:auto</code>속성을 준 뒤, 가상요소로 디자인을 변경합니다. <br> 더 많은 활용 방법은 <a href="https://css-tricks.com/custom-scrollbars-in-webkit/" target="_blank">CSS-Tricks</a> 참고합니다.</p>
+					</div>
+					<pre class="brush:css">
+						/* 스크롤바가 필요한 영역 */
+						.box {overflow-y:auto; width:320px; height:500px; border:1px solid #bfbfbf;}
+						
+						/* 스크롤바의 너비와 색을 지정하는 가상요소 */
+						.box::-webkit-scrollbar {width:3px;}
+						.box::-webkit-scrollbar-thumb {background-color:#a9a9a9;}
+					</pre>
+				</div>
+				<!-- //모바일 스크롤 -->
+
+
+			</div>
+			<!-- //#container.container -->
+			<!-- .footer -->
+			<div id="footer"></div>
+			<!-- // .footer -->
+		</div>
+		<!-- // Content 영역 -->
+
+		<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+		<script src="js/vendor/jquery-1.12.1.min.js"></script>
+		<script src="js/vendor/jquery.easing.1.3.js"></script>
+		<script src="js/syntax/shCore.js"></script>
+		<script src="js/syntax/shAutoloader.js"></script>
+		<script src="js/vendor/bootstrap.js"></script>
+		<script src="js/vendor/holder.js"></script>
+		<script src="js/bstones.js"></script>
+		<script src="js/common.js"></script>
+		<script src="js/slick.js"></script>
+		<!-- 추가되는 js 는 하단에 -->
+		<script>
+			SyntaxHighlighter.autoloader(
+				['js','jscript','javascript','js/syntax/shBrushJScript.js'],
+				['bash','shell','js/syntax/shBrushBash.js'],
+				['css','js/syntax/shBrushCss.js'],
+				['xml', 'html', 'js/syntax/shBrushXml.js'],
+				['sql','js/syntax/shBrushSql.js'],
+				['php','js/syntax/shBrushPhp.js']
+			);
+			
+			SyntaxHighlighter.defaults['toolbar'] = false;
+			SyntaxHighlighter.defaults['wrap-lines'] = true;
+			SyntaxHighlighter.all();
+			
+			$(function(){
+				$('.layer_btn2').on('click',function() {
+					openLayer('layer_pop2');
+				});
+				$('.layer_btn3').on('click',function() {
+						openLayer('layer_pop3');
+					});
+
+				$('.layer_close').on('click', function() {
+					closeLayer('layer_pop2')
+					closeLayer('layer_pop3')
+				})
+						
+				$(".slide").slick({
+			        infinite: true,
+			        dots: true,
+			        prevArrow : $('.btn_prev'),
+				  	nextArrow : $('.btn_next')
+
+			      });
+				$('.multiple_slides').slick({
+				  infinite: true,
+				  slidesToShow: 3,
+				  slidesToScroll: 3,
+				  dots: true,
+				  prevArrow : $('.btn_prev2'),
+				  nextArrow : $('.btn_next2')
+				});
+
+	// rnb 열기
+	$('#dim_header .btn').on('click', function () {
+		$('.rnb_area > .dim').fadeIn(200);
+		$('.rnb_area .rnb').stop().animate({
+			right : '0'
+		},400);
+	});
+	// rnb 닫기
+	$('.rnb_area .close , .dim').on('click', function () {
+		$('.rnb_area > .dim').fadeOut(200);
+		$('.rnb_area .rnb').stop().animate({
+			right : '-220'
+		},400);
+	});
+	// rnb 클릭
+	$('.rnb_area .depth1 a').on('click', function () {
+		if ($(this).next('ul').css('display') == 'none') {
+			$('.rnb_area .depth2').stop().slideUp();
+			$(this).next('ul').stop().slideDown();
+		}
+	});
+
+
+							
+
+			});
+
+
+		</script>
+	</body>
+</html>
