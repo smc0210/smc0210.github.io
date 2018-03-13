@@ -64,9 +64,9 @@ mysql --version
 ## AWS 인스턴스 생성과 기본 셋팅정보 확인
 
 여기서는 테스트용 서버이므로 프리티어 사양인 `t2.micro` 로 셋팅하고, 
-~~`AMI(Amazon Machine Image)`는 새로나온 `Amazon Linux 2 LTS`를 사용했다.~~가 여러가지 문제가 있어서
-표시한 첫번째 `AMI`로 생성했다.
-
+~~`AMI(Amazon Machine Image)`는 새로나온 `Amazon Linux 2 LTS`를 사용했다.가 여러가지 문제가 있어서
+표시한 첫번째 `AMI`로 생성했다.~~
+** 2018.03 AMI 구버전이 더이상 업데이트 되지 않는다는 오피셜이 떠서 그냥 CentOS 그대로 진행하기로 변경 **
 
 ![ami_image][1]
 
@@ -118,9 +118,41 @@ hostname -F /etc/hostname
 
 쉘에 재접속 하면 적용되어있다.
 
-### 4) OS에 설치되어 있는 프로그램 최신버전으로 패치
+### 4) CentOS 방화벽 설정
+CentOS 7 버전을 사용한다면 firewall을 사용해도 되지만 여기서는 기본적으로 공용으로 사용가능한 iptables 를 사용하여 설정한다
+기본적으로 SSH(22)포트만 허용이 된 상태이므로 80포트는 AWS의 Security Group 과는 별개로 OS 단에서 추가적으로 80포트를 열여줘야 하는 것 같다 ()
 
-AMI(아마존리눅스)는 CentOS 계열이므로 패키지 관리자 프로그램으로 `yum`을 사용한다.
+{% highlight bash %}
+vi /etc/sysconfig/iptables
+{% endhighlight %}
+
+22번 포트 설정 아래에 80포트 설정을 추가해준다
+> -A INPUT -m state –state NEW -m tcp -p tcp –dport 22 -j ACCEPT 
+> -A INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT
+
+특정 IP 허용
+> -A INPUT -s ip 주소 -j ACCEPT
+
+특정 IP 차단
+> -A INPUT -s ip 주소 -j DROP
+
+특정 Port 허용
+> -A INPUT -p tcp –dport 443 -j ACCEPT
+
+특정 Port 차단
+> -A INPUT -p tcp –dport 443 -j DROP
+
+방화벽 설정을 끝냈다면 방화벽을 재시작해준다.
+(둘중 하나만 하면 된다.)
+{% highlight bash %}
+/etc/init.d/iptables restart 
+service iptables restart
+{% endhighlight %}
+
+
+### 5) OS에 설치되어 있는 프로그램 최신버전으로 패치
+
+AMI(아마존리눅스)는 레드헷 계열이므로 패키지 관리자 프로그램으로 `yum`을 사용한다.
 
 {% highlight bash %}
 sudo yum update
@@ -129,8 +161,17 @@ sudo yum update
 > AMI의 기본계정인 `ec2-user`를 그대로 사용하므로 sudo를 입력해야 진행이 된다.
 아니면 root 계정 패스워드를 설정 후 root 계정으로 진행해도 되지만 여기서는 ec2-user 그대로 진행
 
+### 6) 기본적인 패키지 설치
+{% highlight bash %}
+yum install yum-fastestmirror
+yum install netconfig
+yum install ntsysv
+yum install wget
+yum install tcpdump
+{% endhighlight %}
 
-### 5) `yum` 저장소에서 설치가능한 패키지 확인
+
+### 7) `yum` 저장소에서 설치가능한 패키지 확인
 {% highlight bash %}
 yum list httpd
 yum list php
@@ -139,7 +180,69 @@ Amazon Linux AMI를 이용해서 인스턴스를 만들었다면 하기 이미�
 ![apache version][3]
 ![php version][4]
 
-### 6) Apache와 PHP 설치
+
+#### 7-1) Apache와 PHP 기본제공 외 버전 설치
+
+CentOs 6.X 버전에서는 원하는 버전이 기본 저장소에 없다.(아파치 2.4 / PHP 5.6)
+아래 커맨드로 가능 추가 저장소를 추가 시켜준다.
+
+{% highlight bash %}
+yum --enablerepo=extras install  centos-release-scl
+{% endhighlight %}
+![repo add][5]
+
+원하는 `apache` 와 `PHP`버전을 명시해서 설치해준다
+
+{% highlight bash %}
+yum install   httpd24  rh-php56   rh-php56-php
+{% endhighlight %}
+
+
+확인해보자 
+{% highlight bash %}
+// 확인
+rpm -qa httpd php 
+// 상세확인
+rpm -qa | grep http
+rpm -qa | grep php
+{% endhighlight %}
+
+만약 명시한 버전으로 설치되지 않았다면 제거를 해준다.
+
+//기존 yum 패키지 제거
+yum remove -y httpd php 
+
+rpm 기본정보 설치가 아닌 정보는 별도로 제거
+각 상세정보 확인에서 뜨는 저장소를 메모장이나 기타 편집기로 가져가서 `rpm -e --nodeps~`(의존성에 개의치 않고 삭제)를 붙여준다
+
+{% highlight bash %}
+rpm -e --nodeps rh-php56-php-cli-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-pear-1.9.5-4.el6.noarch
+rpm -e --nodeps rh-php56-php-5.6.25-1.el6.x86_64
+rpm -e --nodeps php-common-5.3.3-49.el6.x86_64
+rpm -e --nodeps rh-php56-php-xmlrpc-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-runtime-2.3-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-common-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-process-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-xml-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-2.3-1.el6.x86_64
+rpm -e --nodeps php-cli-5.3.3-49.el6.x86_64
+rpm -e --nodeps rh-php56-php-gd-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-pdo-5.6.25-1.el6.x86_64
+rpm -e --nodeps rh-php56-php-pecl-jsonc-1.3.6-3.el6.x86_64
+
+rpm -e --nodeps httpd24-httpd-tools-2.4.27-8.el6.x86_64
+rpm -e --nodeps httpd-tools-2.2.15-60.el6.centos.6.x86_64
+rpm -e --nodeps httpd24-apr-1.5.1-1.el6.x86_64
+rpm -e --nodeps httpd24-libnghttp2-1.7.1-1.el6.x86_64
+rpm -e --nodeps httpd24-httpd-2.4.27-8.el6.x86_64
+rpm -e --nodeps httpd24-1.1-18.el6.x86_64
+rpm -e --nodeps httpd24-runtime-1.1-18.el6.x86_64
+rpm -e --nodeps httpd24-apr-util-1.5.4-1.el6.x86_64
+{% endhighlight %}
+
+
+
 
 
 
@@ -150,4 +253,5 @@ Amazon Linux AMI를 이용해서 인스턴스를 만들었다면 하기 이미�
 [2]: http://smc0210.github.io/assets/post/20180208-1-2.png
 [3]: http://smc0210.github.io/assets/post/20180208-1-3.png
 [4]: http://smc0210.github.io/assets/post/20180208-1-4.png
+[5]: http://smc0210.github.io/assets/post/20180208-1-5.png
 
