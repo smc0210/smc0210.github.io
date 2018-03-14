@@ -1,7 +1,7 @@
 ---
 title: "AWS 기술 에센셜 (AWS Technical Essentials)"
 layout: post
-date: 2018-03-15 09:00 ~ 13:00
+date: 2018-03-15 09:00
 image: /assets/images/markdown.jpg
 headerImage: false
 tag:
