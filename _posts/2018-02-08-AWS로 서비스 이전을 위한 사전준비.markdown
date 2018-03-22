@@ -340,6 +340,7 @@ vi /etc/sysconfig/selinux
 {% endhighlight %}
 
 여기서 파일 중간의 `SELINUX`를 `disabled`로 변경해 준다.
+
 ![selinux][7]
 
  Apache httpd의 기본 DocumentRoot의 SELinux security context 확인
