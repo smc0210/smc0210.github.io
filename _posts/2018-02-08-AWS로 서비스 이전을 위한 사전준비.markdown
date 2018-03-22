@@ -101,6 +101,8 @@ ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 date
 {% endhighlight %}
 
+> 추후 php를 설치하면 php.ini 설정파일에서 `date.timezone`을 검색해서 거기도 'Asia/Seoul`로 바꿔줘야 한다
+
 ### 3) hostname 설정
 SSH 쉘로 접속시 콘솔창에 뜨는 보기싫은 서버이름을 변경해준다.
 보통은 인스턴스에 연결한 도메인으로 설정한다.
@@ -392,6 +394,163 @@ Max kernel policy version:      28
 
 > 해당내용 참고 URL [stackoverflow](https://stackoverflow.com/questions/17442370/you-dont-have-permission-to-access-on-this-server)
 
+웹서버가 정상적으로 작동하는지 확인한다.
+이때 `ELB`를 연결 했다면 `ELB`의 DNS name으로 확인 해보면 된다.
+
+혹시 안된다면 error_log를 살펴보자
+가상호스트 설정파일에 로그 경로를 입력했을 경우 해당 경로로 지정해주면 된다
+{% highlight bash %}
+tail -n 20 error_log_file
+tail -f error_log_file
+{% endhighlight %}
+
+#### 11) RDS 셋팅
+
+(추후 작성)
+
+#### 12) 기존 DB에서 RDS로 데이터 이관
+
+일단은 AWS에서 데이터 이관에 관한 훌룡한 메뉴얼을 제공해주고 있으니 참조 (한글로)
+[MariaDB 인스턴스로 데이터 가져오기 AWS 메뉴얼 ](https://docs.aws.amazon.com/ko_kr/AmazonRDS/latest/UserGuide/MariaDB.Procedural.Importing.html)
+
+여기서는 다음과 같은 순서로 진행한다.
+
+1. 온프레미스에서 DB에서 dump
+2. dump된 파일의 용량에 따라 압축
+3. 파일을 로컬로 다운로드 -> EC2로 업로드 (SFTP 사용)
+4. RDS 인스턴스에서 이관
+
+DB 덤프 (cli에서 하던 workbench 같은 툴로 하던 아무거나)
+{% highlight bash %}
+mysqldump -u db_user -p --databases db_name --single-transaction --compress --order-by-primary > origin_dump.sql
+{% endhighlight %}
+
+용량에 따라서 압축
+{% highlight bash %}
+tar -zcvf origin_dump.tar.gz origin_dump.sql
+{% endhighlight %}
+
+filezilla 같은 툴을 통해 SFTP로 EC2에 접속하여 덤프파일을 업로드 해준다
+이때 S3에서 가져오는 방법등 다양한 방법이 있으나 일단은 테스트 용이므로 직접 업로드를 했다.
+
+EC2로 업로드 되면 압축해제
+{% highlight bash %}
+tar -zxvf origin_dump.tar.gz origin_dump.sql
+{% endhighlight %}
+
+> 자주 안써서 자꾸 까먹는 tar 옵션
+| 옵션 | 설명 |
+|--------|--------|
+| -c | 파일을 tar로 압축 |
+| -p | 파일 권한을 저장 |
+| -v | 압축 혹은 해제 과정을 화면에 출력 |
+| -f | 파일 이름을 지정 |
+| -C | 경로를 지정 |
+| -x | tar 압축해제 |
+| -z | gzip으로 압축 혹은 해제 |
+
+
+EC2에서 RDS mysql 접속
+{% highlight bash %}
+mysql -h <rds.endpoint> -P 3306 -u <db_master_user> -p
+{% endhighlight %}
+
+rds의 endpoint는 AWS manage console의 RDS -> instance -> 인스턴스 set detail 로 접근 후 스크롤을 조금만 내리면 Connect 부분에 Endpoint가 있다.
+
+> 참고로 당연한 얘기지만 EC2에 mysql client 설치를 하던가 해서 접속한다는 가정하의 진행이다.
+
+
+
+이관 시작
+{% highlight bash %}
+source path/origin_dump.sql
+{% endhighlight %}
+
+RDS와 커넥트가 안될경우 패키지 확인후 mysql 관련 패키지 추가 설치
+
+{% highlight bash %}
+mysql55-devel
+mysql-devel
+{% endhighlight %}
+
+
+일반적으로 새로운 소스코드는 정상적으로 작동할테지만 기존 소스를 이관하는 경우 추가적으로
+php.ini 혹은 httpd.conf 등의 설정파일 상의 문제일 가능성이 크니 이때는 
+이관하려는 본 서버의 설정을 참고 하는 수밖에 없다.
+
+#### 13) 편의를 위한 리눅스에 aws cli 설치
+
+awscli 패키지는 APT 및 `yum`과 같은 다른 패키지 관리자용 리포지토리에서 사용할 수 있지만, `pip`에서 가져오거나 번들 설치 관리자를 사용하지 않는 한 최신 버전이 보장되지 않으므로 `pip`를 사용하길 추천
+
+{% highlight bash %}
+pip --version
+{% endhighlight %}
+
+pip가 없는 경우 설치되어 있는 `Python` 버전을 확인한다
+
+{% highlight bash %}
+python --version
+// 혹은
+python3 --version
+{% endhighlight %}
+
+python 이 없을 경우 python을 설치한다.
+AWS market의 CentOS 6.9에서는 `Python 2.6.6`이 기본으로 설치되어 있는데 이로 진행하면 `pip2.x`로 설치가 되고
+awscli 과정에서 에러가 나니 `python3.X`를 설치해준다.
+
+{% highlight bash %}
+yum install https://centos6.iuscommunity.org/ius-release.rpm
+yum install python35u
+python3.5 -V
+
+cd /var/local/
+wget https://bootstrap.pypa.io/get-pip.py
+python3.5 get-pip.py
+pip3 -V
+{% endhighlight %}
+
+> `python3`이 아닌 `python3.5`라고 마이너 버전까지 명시 해줘야 한다...(확인 필요)
+
+
+1. [pypa.io](https://www.pypa.io/en/latest/)에서 설치 스크립트를 다운로드
+{% highlight bash %}
+curl -O https://bootstrap.pypa.io/get-pip.py
+{% endhighlight %}
+
+2. Python을 사용하여 스크립트를 실행
+{% highlight bash %}
+python get-pip.py --user
+{% endhighlight %}
+
+3. 실행 경로 ~/.local/bin을 PATH 변수에 추가
+	1. 사용자 폴더에서 셸의 프로파일 스크립트를 찾는다. 
+		어떤 셸을 가지고 있는지 잘 모르는 경우 `echo $SHELL`을 실행한다.
+{% highlight bash %}
+ls -a ~
+.  ..  .bash_logout  .bash_profile  .bashrc  Desktop  Documents  Downloads
+{% endhighlight %}
+
+	2. 내보내기 명령을 프로필 스크립트에 추가
+{% highlight bash %}
+export PATH=~/.local/bin:$PATH
+{% endhighlight %}
+이 명령은 이 예제의 ~/.local/bin 경로를 현재 PATH 변수에 추가한다.
+
+	3. 프로필을 현재 세션에 로드한다.
+{% highlight bash %}
+source ~/.bash_profile
+{% endhighlight %}
+
+4. `pip`버전을 확인한다.
+{% highlight bash %}
+pip3 --version
+{% endhighlight %}
+
+5. pip를 사용하여 AWS CLI를 설치 및 버전확인
+{% highlight bash %}
+pip3 install awscli --upgrade --user
+aws --version
+{% endhighlight %}
 
 
 
