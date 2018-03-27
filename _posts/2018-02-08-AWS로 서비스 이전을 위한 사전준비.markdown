@@ -1,566 +1,1130 @@
 ---
+
 title: "AWS로 서비스 이전을 위한 사전준비"
+
 layout: post
+
 date: 2018-02-08 19:25
+
 image: /assets/images/markdown.jpg
+
 headerImage: false
+
 tag:
+
 - AWS
+
 - CentOS 6.X
+
 - APM
+
 - PHP
+
 - RDS
+
 category: blog
+
 author: 신명철
+
 description: AWS 이전을 위한 사전준비와 기본 AWS 셋팅
+
+
 
 ---
 
+
+
 ## Summary:
+
+
 
 AWS로 서버이전을 하기 위한 사전작업들과 AWS 콘솔 셋팅
 
+
+
 ## 이전 서버 사양 체크
+
 1) 리눅스 버전체크
+
 {% highlight bash %}
+
 uname -a
+
 {% endhighlight %}
+
+
 
 2) CentOS 버전체크
+
 {% highlight bash %}
+
 cat /etc/redhat-release
+
 grep . /etc/*-release
+
 {% endhighlight %}
+
+
 
 3) 하드용량 체크
+
 {% highlight bash %}
+
 df -h
+
 {% endhighlight %}
+
+
 
 4) 메모리 체크
+
 {% highlight bash %}
+
 free -m
+
 {% endhighlight %}
+
+
 
 5) CPU 코어수 확인
+
 {% highlight bash %}
+
 cat /proc/cpuinfo | grep processor | wc -l
+
 {% endhighlight %}
+
+
 
 6) PHP 버전 체크
+
 {% highlight bash %}
+
 php -v | head -1
+
 {% endhighlight %}
+
+
 
 6) MySQL or MariaDB 버전체크
+
 {% highlight bash %}
+
 mysql --version
+
 {% endhighlight %}
 
+
+
 대략적으로나마 파악한 스펙을 기준으로 삼아 적당한 인스턴스를 생성한다.
+
 > [AWS EC2 사양 및 요금표 참조](https://aws.amazon.com/ko/ec2/instance-types/)
+
+
 
 ## AWS 인스턴스 생성과 기본 셋팅정보 확인
 
+
+
 여기서는 테스트용 서버이므로 프리티어 사양인 `t2.micro` 로 셋팅하고, 
+
 ~~`AMI(Amazon Machine Image)`는 새로나온 `Amazon Linux 2 LTS`를 사용했다.가 여러가지 문제가 있어서
+
 표시한 첫번째 `AMI`로 생성했다.~~
+
 ** 2018.03 AMI 구버전이 더이상 업데이트 되지 않는다는 오피셜이 떠서 그냥 CentOS 그대로 진행하기로 변경 **
+
+
 
 ![ami_image][1]
 
+
+
 ### 1) 쉘 접속
+
 인스턴스가 생성됬으면 각 OS에 맞는 방법으로 쉘에 로그인한다.
+
 AWS에서 인스턴스를 만든 후 기본생성되는 사용자 이름은 다음과 같다.
 
+
+
 - Amazon Linux AMI의 경우 사용자 이름은 ec2-user
+
 - RHEL AMI의 경우 사용자 이름은 ec2-user 또는 root
+
 - Ubuntu AMI의 경우 사용자 이름은 ubuntu 또는 root
+
 - Centos AMI의 경우 사용자 이름은 centos
+
 - Fedora AMI의 경우 사용자 이름은 ec2-user
+
 - SUSE의 경우 사용자 이름은 ec2-user 또는 root
+
+
 
 > [aws 공식문서 참조](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/AccessingInstances.html)
 
 
+
+
+
 ### 2) 시스템 시간 설정
+
 서울 리전에서 인스턴스를 생성했어도 서버시간이 `UTC`로 되어있으니 이를 `Asia/Seoul/`로 변경해준다.
+
 {% highlight bash %}
+
 vi /etc/sysconfig/clock
+
 {% endhighlight %}
+
+
 
 ![Linux Timezone Setting][2]
 
+
+
 시스템 전체에 적용하기 위해 `/usr/share/zoneinfo`의 적절한 파일에 `/etc/localtime`을 심볼릭 링크한다.
+
 {% highlight bash %}
+
 ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
 {% endhighlight %}
 
+
+
 잘 적용됬는지 시간 확인
+
 {% highlight bash %}
+
 date
+
 {% endhighlight %}
+
+
 
 > 추후 php를 설치하면 php.ini 설정파일에서 `date.timezone`을 검색해서 거기도 'Asia/Seoul`로 바꿔줘야 한다
 
+
+
 ### 3) hostname 설정
+
 SSH 쉘로 접속시 콘솔창에 뜨는 보기싫은 서버이름을 변경해준다.
+
 보통은 인스턴스에 연결한 도메인으로 설정한다.
 
+
+
 빈 파일일 경우 그냥 도메인명 써주고 닫는다.
+
 {% highlight bash %}
+
 vi /etc/hostname
+
 {% endhighlight %}
 
+
+
 적용!
+
 {% highlight bash %}
+
 hostname -F /etc/hostname
+
 {% endhighlight %}
+
+
 
 쉘에 재접속 하면 적용되어있다.
 
+
+
 ### 4) CentOS 방화벽 설정
+
 CentOS 7 버전을 사용한다면 firewall을 사용해도 되지만 여기서는 6.X 버전대에서 사용가능한 iptables 를 사용하여 설정한다
+
 기본적으로 SSH(22)포트만 허용이 된 상태이므로 80포트는 AWS의 Security Group 과는 별개로 OS 단에서 추가적으로 80포트를 열여줘야 하는 것 같다 ==(확실하지 않으니 확인 필요)==
 
+
+
 {% highlight bash %}
+
 vi /etc/sysconfig/iptables
+
 {% endhighlight %}
+
+
 
 22번 포트 설정 아래에 80포트 설정을 추가해준다
-{% highlight bash %}
--A INPUT -m state –state NEW -m tcp -p tcp –dport 22 -j ACCEPT 
--A INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT
-{% endhighlight %}
 
 {% highlight bash %}
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+
+{% endhighlight %}
+
+
+
+{% highlight bash %}
+
 // 특정 IP 허용
+
 -A INPUT -s ip 주소 -j ACCEPT
 
+
+
 // 특정 IP 차단
+
 -A INPUT -s ip 주소 -j DROP
 
+
+
 // 특정 Port 허용
+
 -A INPUT -p tcp –dport 443 -j ACCEPT
 
+
+
 // 특정 Port 차단
+
 -A INPUT -p tcp –dport 443 -j DROP
+
 {% endhighlight %}
+
+
 
 방화벽 설정을 끝냈다면 방화벽을 재시작해준다.
+
 (둘중 하나만 하면 된다.)
+
 {% highlight bash %}
+
 /etc/init.d/iptables restart
+
 service iptables restart
+
 {% endhighlight %}
 
+
+
 열린 포트 확인
+
 {% highlight bash %}
+
 netstat -antl
+
 {% endhighlight %}
+
+
 
 ### 5) OS에 설치되어 있는 프로그램 최신버전으로 패치 및 패키지 그룹 설치
 
+
+
 RedHat 계열이므로 패키지 관리자 프로그램으로 `yum`을 사용한다.
 
+
+
 {% highlight bash %}
+
 sudo yum update
+
 {% endhighlight %}
+
+
 
 > 기본 제공되는 계정인 `centos`를 그대로 사용하므로 sudo를 입력해야 진행이 된다.
+
 아니면 root 계정 패스워드를 설정 후 root 계정으로 진행해도 되지만 여기서는 기본계정 그대로 진행
 
+
+
 ### 6) 기본적인 패키지 설치
+
 {% highlight bash %}
+
 yum groupinstall "Development Tools"
+
 # 그외 필요에 따라서 설치 
+
 yum install yum-fastestmirror
+
 yum install netconfig
+
 yum install ntsysv
+
 yum install wget
+
 yum install tcpdump
+
 {% endhighlight %}
+
+
+
 
 
 ### 7) `yum` 저장소에서 설치가능한 패키지 확인
+
 {% highlight bash %}
+
 yum list httpd
+
 yum list php
+
 {% endhighlight %}
 
+
+
 > Amazon Linux AMI를 사용할 경우에는 하기 이미지와 같은 버전으로 설치되니 참조
+
 ![apache version][3]
+
 ![php version][4]
+
+
+
 
 
 #### 7-1) Apache와 PHP 기본제공 외 버전 설치
 
+
+
 CentOs 6.9 버전에서는 원하는 버전이 기본 저장소에 없다.(아파치 2.4 / PHP 5.6 이상)
+
 아래 커맨드로 가능 추가 저장소를 추가 시켜준다.
 
+
+
 {% highlight bash %}
+
 yum --enablerepo=extras install  centos-release-scl
+
 {% endhighlight %}
+
 ![repo add][5]
+
+
 
 원하는 `apache` 와 `PHP`버전을 명시해서 설치해준다
 
+
+
 {% highlight bash %}
+
 yum install   httpd24  rh-php56   rh-php56-php
+
 {% endhighlight %}
+
+
+
 
 
 확인해보자
+
 {% highlight bash %}
+
 // 확인
+
 rpm -qa httpd php
+
 // 상세확인
+
 rpm -qa | grep http
+
 rpm -qa | grep php
+
 {% endhighlight %}
+
+
 
 확인 후 만약 명시한 버전으로 설치되지 않았다면 제거를 해준다.
 
+
+
 //기존 yum 패키지 제거
+
 {% highlight bash %}
+
 yum remove -y httpd php
+
 {% endhighlight %}
+
+
 
 rpm 기본정보 설치가 아닌 정보는 별도로 제거
+
 각 상세정보 확인에서 뜨는 저장소를 메모장이나 기타 편집기로 가져가서 `rpm -e --nodeps~`(의존성에 개의치 않고 삭제)를 붙여준다
 
+
+
 {% highlight bash %}
+
 rpm -e --nodeps rh-php56-php-cli-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-pear-1.9.5-4.el6.noarch
+
 rpm -e --nodeps rh-php56-php-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps php-common-5.3.3-49.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-xmlrpc-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-runtime-2.3-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-common-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-process-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-xml-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-2.3-1.el6.x86_64
+
 rpm -e --nodeps php-cli-5.3.3-49.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-gd-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-pdo-5.6.25-1.el6.x86_64
+
 rpm -e --nodeps rh-php56-php-pecl-jsonc-1.3.6-3.el6.x86_64
 
+
+
 rpm -e --nodeps httpd24-httpd-tools-2.4.27-8.el6.x86_64
+
 rpm -e --nodeps httpd-tools-2.2.15-60.el6.centos.6.x86_64
+
 rpm -e --nodeps httpd24-apr-1.5.1-1.el6.x86_64
+
 rpm -e --nodeps httpd24-libnghttp2-1.7.1-1.el6.x86_64
+
 rpm -e --nodeps httpd24-httpd-2.4.27-8.el6.x86_64
+
 rpm -e --nodeps httpd24-1.1-18.el6.x86_64
+
 rpm -e --nodeps httpd24-runtime-1.1-18.el6.x86_64
+
 rpm -e --nodeps httpd24-apr-util-1.5.4-1.el6.x86_64
+
 {% endhighlight %}
+
+
 
 > 기본 저장소에 없는 버전대를 설치할 경우 생기는 문제는 조금더 확인이 필요할 듯
 
 
+
+
+
 #### 8) Apache기본 경로 변경
+
+
 
 기본적으로 설정되어 있는 `/var/html` 경로를 사용하진 않으므로 경로를 바꿔준다.
 
+
+
 1. 아파치 설정파일 `httpd.conf` 를 직접 바꾼다. (비추천)
+
 2. 별도의 설정파일을 아파치 설정파일에 설정해서 따로 관리를 한다
+
+
 
 혼자 사용할 개인서버가 아니므로 관리의 편의상 여기서는 2번 방법으로 진행한다.
 
+
+
 > `CentOS`는 `Ubuntu`와 아파치 설정 파일 경로와 enable 시키는 방식이 다르니 참고
 
+
+
 아파치 설정 파일을 열어주고 ,
+
 {% highlight bash %}
+
 vi /etc/httpd/conf/httpd.conf
+
 {% endhighlight %}
+
+
 
 설정파일 제일 하단에 가상호스트 설정 파일경로를 추가해준다.
 
+
+
+
+
 ![apache conf][6]
 
+
+
 {% highlight xml %}
+
 NameVirtualHost *:80
+
 include /etc/httpd/conf/extra/httpd-vhosts.conf
+
 {% endhighlight %}
+
+
 
 include 시킨 경로에 폴더와 파일을 생성해주고 아래와 같이 입력한다.
 
+
+
 {% highlight xml %}
+
 <VirtualHost *:80>
+
     DocumentRoot /home/{user}/www/public_html
+
     ServerAdmin dev@test.com
+
     ServerName test.com
+
     ServerAlias www.test.com
+
     #ErrorLog logs/test.com-error_log
+
     #CustomLog logs/test.com-access_log combined
 
+
+
     <Directory "/home/{user}/www/public_html">
+
        # 필요할 경우 선언
+
        php_admin_value open_basedir /home/{user}/www/public_html:/home/{user}/www:/home/{user}/www/php_lib
+
        Options Indexes FollowSymLinks
+
        AllowOverride None
+
        Order allow,deny
+
        Allow from all
+
     </Directory>
+
 </VirtualHost>
+
 {% endhighlight %}
 
+
+
 > 주의 사항으로 `<Directory >` 부분을 웹에서 복사 붙여넣기 할경우 정상작동을 안하는 경우가 있다.
+
 > 또한 위 설정내용은 `Apache2.2` 버전에 해당하는 내용으로 2.4버전 이상은 설정값이 조금 다르니 참고
+
+
+
 
 
 설정파일을 수정했다면 먼저 문법 검사를 한 후 아파치를 새로고침 혹은 재시작 해주자
 
 
+
+
+
 {% highlight bash %}
+
 service httpd configtest
+
 service httpd restart
+
 {% endhighlight %}
 
+
+
 #### 9) 권한설정
+
 설정파일에서 설정한 경로의 권한과 그룹을 맞춰준다.
 
+
+
 {% highlight bash %}
-chmod 701 /home/{user}/www
 chmod  711  /home/{user}
 chmod  755  /home/{user}/www
 chown {user}:apache /home/{user}/www
 {% endhighlight %}
 
 
+
+
+
 #### 10) selinux 설정 변경
 
+
+
 CentOS 는 `SELinux`라는 보안강화 모듈이 설치 및 활성화 되어있는데,
+
 간혹 이로인해 웹에서 접근시 permission error 가 뜰 경우 아래와 같이 조치한다.
+
 기본적으로 웹 소프트웨어 업로드 및 파일 쓰기 기능을 막는 기능이라고 생각하면 되고 문제가 생길경우 꺼주자
 
+
+
 {% highlight bash %}
+
 setenforce 0
+
 vi /etc/sysconfig/selinux
+
 {% endhighlight %}
+
+
 
 여기서 파일 중간의 `SELINUX`를 `disabled`로 변경해 준다.
 
+
+
 ![selinux][7]
 
+
+
  Apache httpd의 기본 DocumentRoot의 SELinux security context 확인
+
 {% highlight bash %}
+
 ls -alZ /var/www/html
+
 //output
+
 drwxr-xr-x. root root system_u:object_r:httpd_sys_content_t:s0 .
+
 drwxr-xr-x. root root system_u:object_r:httpd_sys_content_t:s0 ..
+
 -rw-r--r--. root root unconfined_u:object_r:httpd_sys_content_t:s0 index.php
+
 {% endhighlight %}
+
+
 
 새로 변경한 DocumentRoot의 SELinux security context 확인
+
 {% highlight bash %}
+
 ls -alZ /home/username/public_html/
+
 //output
+
 drwxr-xr-x. username username unconfined_u:object_r:httpd_user_content_t:s0 .
+
 drwx--x--x. username username unconfined_u:object_r:user_home_dir_t:s0 ..
+
 -rw-r--r--. username username unconfined_u:object_r:httpd_user_content_t:s0 index.html
+
 {% endhighlight %}
+
+
 
 chcon 명령으로 SELinux security context 변경
+
 {% highlight bash %}
+
 chcon -Rv --type=httpd_sys_content_t /home/{username}/public_html
+
 //output
+
 changing security context of ‘/home/username/public_html/index.html’
+
 changing security context of ‘/home/username/public_html’
+
 {% endhighlight %}
+
+
 
 변경내용 확인
+
 {% highlight bash %}
+
 ls -alZ /home/{username}/public_html/
+
 //output
+
 drwxr-xr-x. username username unconfined_u:object_r:httpd_sys_content_t:s0 .
+
 drwx--x--x. username username unconfined_u:object_r:user_home_dir_t:s0 ..
+
 -rw-r--r--. username username unconfined_u:object_r:httpd_sys_content_t:s0 index.html
+
 {% endhighlight %}
 
+
+
 현재 SELinux 상태 확인
+
 {% highlight bash %}
+
 sestatus
+
 //output
+
 SELinux status:                 enabled
+
 SELinuxfs mount:                /sys/fs/selinux
+
 SELinux root directory:         /etc/selinux
+
 Loaded policy name:             targeted
+
 Current mode:                   enforcing
+
 Mode from config file:          enforcing
+
 Policy MLS status:              enabled
+
 Policy deny_unknown status:     allowed
+
 Max kernel policy version:      28
+
 {% endhighlight %}
+
+
 
 > 해당내용 참고 URL [stackoverflow](https://stackoverflow.com/questions/17442370/you-dont-have-permission-to-access-on-this-server)
 
+
+
 웹서버가 정상적으로 작동하는지 확인한다.
+
 이때 `ELB`를 연결 했다면 `ELB`의 DNS name으로 확인 해보면 된다.
 
+
+
 혹시 안된다면 error_log를 살펴보자
+
 가상호스트 설정파일에 로그 경로를 입력했을 경우 해당 경로로 지정해주면 된다
+
 {% highlight bash %}
+
 tail -n 20 error_log_file
+
 tail -f error_log_file
+
 {% endhighlight %}
+
+
 
 #### 11) RDS 셋팅
 
+
+
 (추후 작성)
+
+
 
 #### 12) 기존 DB에서 RDS로 데이터 이관
 
+
+
 일단은 AWS에서 데이터 이관에 관한 훌룡한 메뉴얼을 제공해주고 있으니 참조 (한글로)
+
 [MariaDB 인스턴스로 데이터 가져오기 AWS 메뉴얼 ](https://docs.aws.amazon.com/ko_kr/AmazonRDS/latest/UserGuide/MariaDB.Procedural.Importing.html)
+
+
 
 여기서는 다음과 같은 순서로 진행한다.
 
+
+
 1. 온프레미스에서 DB에서 dump
+
 2. dump된 파일의 용량에 따라 압축
+
 3. 파일을 로컬로 다운로드 -> EC2로 업로드 (SFTP 사용)
+
 4. RDS 인스턴스에서 이관
 
+
+
 DB 덤프 (cli에서 하던 workbench 같은 툴로 하던 아무거나)
+
 {% highlight bash %}
+
 mysqldump -u db_user -p --databases db_name --single-transaction --compress --order-by-primary > origin_dump.sql
+
 {% endhighlight %}
+
+
 
 용량에 따라서 압축
+
 {% highlight bash %}
+
 tar -zcvf origin_dump.tar.gz origin_dump.sql
+
 {% endhighlight %}
+
+
 
 filezilla 같은 툴을 통해 SFTP로 EC2에 접속하여 덤프파일을 업로드 해준다
+
 이때 S3에서 가져오는 방법등 다양한 방법이 있으나 일단은 테스트 용이므로 직접 업로드를 했다.
 
+
+
 EC2로 업로드 되면 압축해제
+
 {% highlight bash %}
+
 tar -zxvf origin_dump.tar.gz origin_dump.sql
+
 {% endhighlight %}
 
+
+
 > 자주 안써서 자꾸 까먹는 tar 옵션
+
+
+
 | 옵션 | 설명 |
+
 |--------|--------|
+
 | -c | 파일을 tar로 압축 |
+
 | -p | 파일 권한을 저장 |
+
 | -v | 압축 혹은 해제 과정을 화면에 출력 |
+
 | -f | 파일 이름을 지정 |
+
 | -C | 경로를 지정 |
+
 | -x | tar 압축해제 |
+
 | -z | gzip으로 압축 혹은 해제 |
 
 
+
+
+
 EC2에서 RDS mysql 접속
+
 {% highlight bash %}
+
 mysql -h <rds.endpoint> -P 3306 -u <db_master_user> -p
+
 {% endhighlight %}
 
+
+
 rds의 endpoint는 AWS manage console의 RDS -> instance -> 인스턴스 set detail 로 접근 후 스크롤을 조금만 내리면 Connect 부분에 Endpoint가 있다.
+
+
 
 > 참고로 당연한 얘기지만 EC2에 mysql client 설치를 하던가 해서 접속한다는 가정하의 진행이다.
 
 
 
+
+
+
+
 이관 시작
+
 {% highlight bash %}
+
 source path/origin_dump.sql
+
 {% endhighlight %}
+
+
 
 RDS와 커넥트가 안될경우 패키지 확인후 mysql 관련 패키지 추가 설치
 
+
+
 {% highlight bash %}
+
 mysql55-devel
+
 mysql-devel
+
 {% endhighlight %}
+
+
+
 
 
 일반적으로 새로운 소스코드는 정상적으로 작동할테지만 기존 소스를 이관하는 경우 추가적으로
+
 php.ini 혹은 httpd.conf 등의 설정파일 상의 문제일 가능성이 크니 이때는 
+
 이관하려는 본 서버의 설정을 참고 하는 수밖에 없다.
+
+
 
 #### 13) 편의를 위한 리눅스에 aws cli 설치
 
+
+
 awscli 패키지는 APT 및 `yum`과 같은 다른 패키지 관리자용 리포지토리에서 사용할 수 있지만, `pip`에서 가져오거나 번들 설치 관리자를 사용하지 않는 한 최신 버전이 보장되지 않으므로 `pip`를 사용하길 추천
 
+
+
 {% highlight bash %}
+
 pip --version
+
 {% endhighlight %}
+
+
 
 pip가 없는 경우 설치되어 있는 `Python` 버전을 확인한다
 
+
+
 {% highlight bash %}
+
 python --version
+
 // 혹은
+
 python3 --version
+
 {% endhighlight %}
+
+
 
 python 이 없을 경우 python을 설치한다.
+
 AWS market의 CentOS 6.9에서는 `Python 2.6.6`이 기본으로 설치되어 있는데 이로 진행하면 `pip2.x`로 설치가 되고
+
 awscli 과정에서 에러가 나니 `python3.X`를 설치해준다.
 
+
+
 {% highlight bash %}
+
 yum install https://centos6.iuscommunity.org/ius-release.rpm
+
 yum install python35u
+
 python3.5 -V
 
+
+
 cd /var/local/
+
 wget https://bootstrap.pypa.io/get-pip.py
+
 python3.5 get-pip.py
+
 pip3 -V
+
 {% endhighlight %}
+
+
 
 > `python3`이 아닌 `python3.5`라고 마이너 버전까지 명시 해줘야 한다...(확인 필요)
 
 
+
+
+
 1. [pypa.io](https://www.pypa.io/en/latest/)에서 설치 스크립트를 다운로드
+
 {% highlight bash %}
+
 curl -O https://bootstrap.pypa.io/get-pip.py
+
 {% endhighlight %}
+
+
 
 2. Python을 사용하여 스크립트를 실행
+
 {% highlight bash %}
+
 python get-pip.py --user
+
 {% endhighlight %}
+
+
 
 3. 실행 경로 ~/.local/bin을 PATH 변수에 추가
+
 	1. 사용자 폴더에서 셸의 프로파일 스크립트를 찾는다. 
+
 		어떤 셸을 가지고 있는지 잘 모르는 경우 `echo $SHELL`을 실행한다.
+
 {% highlight bash %}
+
 ls -a ~
+
 .  ..  .bash_logout  .bash_profile  .bashrc  Desktop  Documents  Downloads
+
 {% endhighlight %}
+
+
 
 	2. 내보내기 명령을 프로필 스크립트에 추가
+
 {% highlight bash %}
+
 export PATH=~/.local/bin:$PATH
+
 {% endhighlight %}
+
 이 명령은 이 예제의 ~/.local/bin 경로를 현재 PATH 변수에 추가한다.
 
+
+
 	3. 프로필을 현재 세션에 로드한다.
+
 {% highlight bash %}
+
 source ~/.bash_profile
+
 {% endhighlight %}
+
+
 
 4. `pip`버전을 확인한다.
+
 {% highlight bash %}
+
 pip3 --version
+
 {% endhighlight %}
 
+
+
 5. pip를 사용하여 AWS CLI를 설치 및 버전확인
+
 {% highlight bash %}
+
 pip3 install awscli --upgrade --user
+
 aws --version
+
 {% endhighlight %}
+
+
+
+
+
 
 
 
 
 [1]: http://smc0210.github.io/assets/post/20180208-1-1.png
+
 [2]: http://smc0210.github.io/assets/post/20180208-1-2.png
+
 [3]: http://smc0210.github.io/assets/post/20180208-1-3.png
+
 [4]: http://smc0210.github.io/assets/post/20180208-1-4.png
+
 [5]: http://smc0210.github.io/assets/post/20180208-1-5.png
+
 [6]: http://smc0210.github.io/assets/post/20180208-1-6.png
+
 [7]: http://smc0210.github.io/assets/post/20180208-1-7.png
+
+
 
