@@ -3,7 +3,6 @@ module.exports = {
     description: 'Just pls',
     themeConfig: {
         nav: [
-            { text: 'Home', link: '/'},
             { 
                 text: 'Tools',
                 items: [
