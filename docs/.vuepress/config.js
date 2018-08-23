@@ -1,6 +1,5 @@
 module.exports = {
     title: 'vuPress docs',
-    description: 'Just pls',
     themeConfig: {
         nav: [
             { 
@@ -10,5 +9,8 @@ module.exports = {
                 ] 
             }
         ]
-    }
+    },
+    markdown: {
+        lineNumbers: true
+      }
 }
